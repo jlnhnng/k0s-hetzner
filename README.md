@@ -8,10 +8,10 @@ This config will create 7 servers, within a private network, for a Kubernetes Cl
 - 1 Network (10.0.0.0/8) with 1 Subnet (10.240.0.0/24)
 
 ## Prerequesites
-- Hetzner Cloud Account:
-- Create a Hetzner Cloud API Key:
-- Register your SSH Key in Hetzner Cloud Project:
-- Terraform CLI: https://learn.hashicorp.com/tutorials/terraform/install-cli
+- Hetzner Cloud Account: [Referal Link](https://hetzner.cloud/?ref=n2kb4hM7PmYQ)
+- Create a Hetzner Cloud API Key: [How-To](https://docs.hetzner.cloud/#getting-started)
+- Add your SSH Key in your Hetzner Cloud Project: [How-To](https://community.hetzner.com/tutorials/add-ssh-key-to-your-hetzner-cloud#step-2---add-the-ssh-key-to-your-hetzner-cloud-console)
+- Terraform CLI: [How-To](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 ## Getting Started
 1. Clone this repo
@@ -25,4 +25,4 @@ This config will create 7 servers, within a private network, for a Kubernetes Cl
 > You can add more customizations in the cloud-init file if needed
 
 ## k0s
-Now that you got all resources ready, we can simply install a k0s cluster within minutes. [How?]()
+Now that you got all resources ready, we can simply install a k0s cluster within minutes. [How?](https://github.com/jlnhnng/hetzner-terraform/tree/main/k0s#readme)
