@@ -1,190 +1,125 @@
-variable "hcloud_token" {}
+variable "hcloud_token" {
+    description = "Hetzner API token"
+}
 
 provider "hcloud" {
     token = var.hcloud_token
 }
 
-data "hcloud_ssh_key" "default" {
-    fingerprint = "XXX"
+variable "ssh_key" {
+    default = []
+}
+
+variable "location" {
+    default = "fsn1"
+}
+
+variable "image" {
+    default = "ubuntu-18.04"
+}
+
+variable "controller_type" {
+    default = "cx21"
+}
+
+variable "worker_type" {
+    default = "cx21"
+}
+
+variable "bastion_type" {
+    default = "cx11"
+}
+
+variable "network_zone" {
+    default = "eu-central"
 }
 
 data "template_file" "cloudinit" {
     template = file("cloudinit/cloud-init.yaml.cfg")
 }
 
-resource "hcloud_server" "manager0" {
-    name = "manager0"
-    image = "ubuntu-18.04"
-    server_type = "cx41"
-    location = "fsn1"
-    ssh_keys = [data.hcloud_ssh_key.default.id]
+resource "hcloud_server" "controller0" {
+    name = "controller0"
+    image = var.image
+    server_type = var.controller_type
+    location = var.location
+    ssh_keys = var.ssh_key
     user_data = data.template_file.cloudinit.rendered
+    labels = {
+        role = "controller"
+    }
 }
 
-resource "hcloud_server" "manager1" {
-    name = "manager1"
-    image = "ubuntu-18.04"
-    server_type = "cx41"
-    location = "fsn1"
-    ssh_keys = [data.hcloud_ssh_key.default.id]
+resource "hcloud_server" "controller1" {
+    name = "controller1"
+    image = var.image
+    server_type = var.controller_type
+    location = var.location
+    ssh_keys = var.ssh_key
     user_data = data.template_file.cloudinit.rendered
+    labels = {
+        role = "controller"
+    }
 }
 
-resource "hcloud_server" "manager2" {
-    name = "manager2"
-    image = "ubuntu-18.04"
-    server_type = "cx41"
-    location = "fsn1"
-    ssh_keys = [data.hcloud_ssh_key.default.id]
+resource "hcloud_server" "controller2" {
+    name = "controller2"
+    image = var.image
+    server_type = var.controller_type
+    location = var.location
+    ssh_keys = var.ssh_key
     user_data = data.template_file.cloudinit.rendered
+    labels = {
+        role = "controller"
+    }
 } 
 
 resource "hcloud_server" "worker0" {
     name = "worker0"
-    image = "ubuntu-18.04"
-    server_type = "cx51"
-    location = "fsn1"
-    ssh_keys = [data.hcloud_ssh_key.default.id]
+    image = var.image
+    server_type = var.worker_type
+    location = var.location
+    ssh_keys = var.ssh_key
     user_data = data.template_file.cloudinit.rendered
-}
-resource "hcloud_volume" "worker0volume1" {
-  name = "worker0volume1"
-  size = 55
-  server_id = hcloud_server.worker0.id
-  automount = true
-  format = "ext4"
-}
- resource "hcloud_volume" "worker0volume2" {
-  name = "worker0volume2"
-  size = 55
-  server_id = hcloud_server.worker0.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker0volume3" {
-  name = "worker0volume3"
-  size = 55
-  server_id = hcloud_server.worker0.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker0volume4" {
-  name = "worker0volume4"
-  size = 55
-  server_id = hcloud_server.worker0.id
-  automount = true
-  format = "ext4"
+    labels = {
+        role = "worker"
+    }
 }
 
 resource "hcloud_server" "worker1" {
     name = "worker1"
-    image = "ubuntu-18.04"
-    server_type = "cx51"
-    location = "fsn1"
-    ssh_keys = [data.hcloud_ssh_key.default.id]
+    image = var.image
+    server_type = var.worker_type
+    location = var.location
+    ssh_keys = var.ssh_key
     user_data = data.template_file.cloudinit.rendered
-}
-resource "hcloud_volume" "worker1volume1" {
-  name = "worker1volume1"
-  size = 55
-  server_id = hcloud_server.worker1.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker1volume2" {
-  name = "worker1volume2"
-  size = 55
-  server_id = hcloud_server.worker1.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker1volume3" {
-  name = "worker1volume3"
-  size = 55
-  server_id = hcloud_server.worker1.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker1volume4" {
-  name = "worker1volume4"
-  size = 55
-  server_id = hcloud_server.worker1.id
-  automount = true
-  format = "ext4"
+    labels = {
+        role = "worker"
+    }
 }
 
 resource "hcloud_server" "worker2" {
     name = "worker2"
-    image = "ubuntu-18.04"
-    server_type = "cx51"
-    location = "fsn1"
-    ssh_keys = [data.hcloud_ssh_key.default.id]
+    image = var.image
+    server_type = var.worker_type
+    location = var.location
+    ssh_keys = var.ssh_key
     user_data = data.template_file.cloudinit.rendered
-}
-resource "hcloud_volume" "worker2volume1" {
-  name = "worker2volume1"
-  size = 55
-  server_id = hcloud_server.worker2.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker2volume2" {
-  name = "worker2volume2"
-  size = 55
-  server_id = hcloud_server.worker2.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker2volume3" {
-  name = "worker2volume3"
-  size = 55
-  server_id = hcloud_server.worker2.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker2volume4" {
-  name = "worker2volume4"
-  size = 55
-  server_id = hcloud_server.worker2.id
-  automount = true
-  format = "ext4"
+    labels = {
+        role = "worker"
+    }
 }
 
-resource "hcloud_server" "worker3" {
-    name = "worker3"
-    image = "ubuntu-18.04"
-    server_type = "cx51"
-    location = "fsn1"
-    ssh_keys = [data.hcloud_ssh_key.default.id]
+resource "hcloud_server" "bastionhost" {
+    name = "bastionhost"
+    image = var.image
+    server_type = var.bastion_type
+    location = var.location
+    ssh_keys = var.ssh_key
     user_data = data.template_file.cloudinit.rendered
-}
-resource "hcloud_volume" "worker3volume1" {
-  name = "worker3volume1"
-  size = 55
-  server_id = hcloud_server.worker3.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker3volume2" {
-  name = "worker3volume2"
-  size = 55
-  server_id = hcloud_server.worker3.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker3volume3" {
-  name = "worker3volume3"
-  size = 55
-  server_id = hcloud_server.worker3.id
-  automount = true
-  format = "ext4"
-}
-resource "hcloud_volume" "worker3volume4" {
-  name = "worker3volume4"
-  size = 55
-  server_id = hcloud_server.worker3.id
-  automount = true
-  format = "ext4"
+    labels = {
+        role = "bastion"
+    }
 }
 
 resource "hcloud_network" "network" {
@@ -195,57 +130,88 @@ resource "hcloud_network" "network" {
 resource "hcloud_network_subnet" "subnet" {
   network_id = hcloud_network.network.id
   type = "cloud"
-  network_zone = "eu-central"
-  ip_range   = "10.240.0.0/24"
+  network_zone = var.network_zone
+  ip_range   = "10.250.0.0/24"
 }
 
-#Manager Nodes
-resource "hcloud_server_network" "manager0-network" {
-  server_id = hcloud_server.manager0.id
+resource "hcloud_server_network" "controller0-network" {
+  server_id = hcloud_server.controller0.id
   subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.240.0.100"
+  ip = "10.250.0.100"
 }
-resource "hcloud_server_network" "manager1-network" {
-  server_id = hcloud_server.manager1.id
+resource "hcloud_server_network" "controller1-network" {
+  server_id = hcloud_server.controller1.id
   subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.240.0.101"
+  ip = "10.250.0.101"
 }
-resource "hcloud_server_network" "manager2-network" {
-  server_id = hcloud_server.manager2.id
+resource "hcloud_server_network" "controller2-network" {
+  server_id = hcloud_server.controller2.id
   subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.240.0.102"
+  ip = "10.250.0.102"
 }
-
-#Worker Nodes
 resource "hcloud_server_network" "worker0-network" {
   server_id = hcloud_server.worker0.id
   subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.240.0.200"
+  ip = "10.250.0.200"
 }
 resource "hcloud_server_network" "worker1-network" {
   server_id = hcloud_server.worker1.id
   subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.240.0.201"
+  ip = "10.250.0.201"
 }
 resource "hcloud_server_network" "worker2-network" {
   server_id = hcloud_server.worker2.id
   subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.240.0.202"
-}
-resource "hcloud_server_network" "worker3-network" {
-  server_id = hcloud_server.worker3.id
-  subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.240.0.203"
+  ip = "10.250.0.202"
 }
 
-output "server_ip_manager0" {
-    value = hcloud_server.manager0.ipv4_address
+resource "hcloud_server_network" "bastionhost-network" {
+  server_id = hcloud_server.bastionhost.id
+  subnet_id = hcloud_network_subnet.subnet.id
+  ip = "10.250.0.50"
 }
-output "server_ip_manager1" {
-    value = hcloud_server.manager1.ipv4_address
+
+resource "hcloud_load_balancer" "k0s_load_balancer" {
+  name       = "k0s-load-balancer"
+  load_balancer_type = "lb11"
+  location   = var.location
 }
-output "server_ip_manager2" {
-    value = hcloud_server.manager2.ipv4_address
+
+resource "hcloud_load_balancer_target" "load_balancer_target" {
+  type             = "label_selector"
+  load_balancer_id = hcloud_load_balancer.load_balancer.id
+  label_selector = "role=controller"
+}
+
+resource "hcloud_load_balancer_service" "load_balancer_service_6443" {
+    load_balancer_id = hcloud_load_balancer.load_balancer.id
+    protocol = "tcp"
+    listen_port = 6443
+    destination_port = 6443
+}
+
+resource "hcloud_load_balancer_service" "load_balancer_service_9443" {
+    load_balancer_id = hcloud_load_balancer.load_balancer.id
+    protocol = "tcp"
+    listen_port = 9443
+    destination_port = 9443
+}
+
+resource "hcloud_load_balancer_service" "load_balancer_service_8132" {
+    load_balancer_id = hcloud_load_balancer.load_balancer.id
+    protocol = "tcp"
+    listen_port = 8132
+    destination_port = 8132
+}
+
+output "server_ip_controller0" {
+    value = hcloud_server.controller0.ipv4_address
+}
+output "server_ip_controller1" {
+    value = hcloud_server.controller1.ipv4_address
+}
+output "server_ip_controller2" {
+    value = hcloud_server.controller2.ipv4_address
 }
 output "server_ip_worker0" {
     value = hcloud_server.worker0.ipv4_address
@@ -256,6 +222,9 @@ output "server_ip_worker1" {
 output "server_ip_worker2" {
     value = hcloud_server.worker2.ipv4_address
 }
-output "server_ip_worker3" {
-    value = hcloud_server.worker3.ipv4_address
+output "server_ip_bastionhost" {
+    value = hcloud_server.bastionhost.ipv4_address
+}
+output "k0s_load_balancer_ip" {
+    value = hcloud_load_balancer.k0s_load_balancer.ipv4_address
 }
