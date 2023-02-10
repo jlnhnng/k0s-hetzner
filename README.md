@@ -62,7 +62,7 @@ Hetzner Cloud offers useful integration tooling for Kubernetes and Hetzner Cloud
 Let's start with adding our API Key to the YAML file (hetzner/hcloud-secret.yaml) for the secret, so the Cloud Controller Manager and the Container Storage Interface Driver can interact with our Hetzner Cloud Project. After this change we need to apply the YAML to our k0s cluster:
 ``` bash
 # Grab kubeconfig file from previously created cluster
-k0sctl kubeconfig > kubeconfig
+k0sctl kubeconfig  --config k0s/k0sctl.yaml > kubeconfig
 
 # Apply hcloud secret manifest
 kubectl apply -f 'hetzner/hcloud-secret.yaml' --kubeconfig kubeconfig
