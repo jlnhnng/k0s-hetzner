@@ -3,6 +3,9 @@ terraform {
     hcloud = {
       source = "hetznercloud/hcloud"
     }
+    local = {
+      source = "hashicorp/local"
+    }
     template = {
       source = "hashicorp/template"
     }

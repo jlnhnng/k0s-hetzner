@@ -10,7 +10,7 @@ spec:
       port: 22
       keyPath: ~/.ssh/id_rsa
       bastion:
-        address: {{public-bastionhost-address}}
+        address: ${public-bastionhost-address}
         user: root
         keyPath: ~/.ssh/id_rsa
     role: controller+worker
@@ -23,7 +23,7 @@ spec:
       port: 22
       keyPath: ~/.ssh/id_rsa
       bastion:
-        address: {{public-bastionhost-address}}
+        address: ${public-bastionhost-address}
         user: root
         keyPath: ~/.ssh/id_rsa
     role: controller+worker
@@ -36,7 +36,7 @@ spec:
       port: 22
       keyPath: ~/.ssh/id_rsa
       bastion:
-        address: {{public-bastionhost-address}}
+        address: ${public-bastionhost-address}
         user: root
         keyPath: ~/.ssh/id_rsa
     role: controller+worker
@@ -49,7 +49,7 @@ spec:
       port: 22
       keyPath: ~/.ssh/id_rsa
       bastion:
-        address: {{public-bastionhost-address}}
+        address: ${public-bastionhost-address}
         user: root
         keyPath: ~/.ssh/id_rsa
     role: worker
@@ -62,7 +62,7 @@ spec:
       port: 22
       keyPath: ~/.ssh/id_rsa
       bastion:
-        address: {{public-bastionhost-address}}
+        address: ${public-bastionhost-address}
         user: root
         keyPath: ~/.ssh/id_rsa
     role: worker
@@ -75,13 +75,13 @@ spec:
       port: 22
       keyPath: ~/.ssh/id_rsa
       bastion:
-        address: {{public-bastionhost-address}}
+        address: ${public-bastionhost-address}
         user: root
         keyPath: ~/.ssh/id_rsa
     role: worker
     privateAddress: 10.250.0.202
     installFlags:
-    - --kubelet-extra-args=--cloud-provider=external  k0s:
+    - --kubelet-extra-args=--cloud-provider=external
   k0s:
     version: 1.24.4+k0s.0
     config:
@@ -91,9 +91,9 @@ spec:
         name: hetzner-k0s
       spec:
         api:
-          externalAddress: {{loadbalancer-address}}
+          externalAddress: ${loadbalancer-address}
           sans:
-          - {{loadbalancer-address}}
+          - ${loadbalancer-address}
           - 10.250.0.100
           - 10.250.0.101
           - 10.250.0.102

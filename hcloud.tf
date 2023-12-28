@@ -6,7 +6,7 @@ provider "hcloud" {
     token = var.hcloud_token
 }
 
-variable "ssh_key" {
+variable "ssh_keys" {
     default = []
 }
 
@@ -15,7 +15,7 @@ variable "location" {
 }
 
 variable "image" {
-    default = "ubuntu-18.04"
+    default = "ubuntu-22.04"
 }
 
 variable "controller_type" {
@@ -34,6 +34,11 @@ variable "network_zone" {
     default = "eu-central"
 }
 
+variable "ipv6_enabled" {
+  type = bool
+  default = false
+}
+
 data "template_file" "cloudinit" {
     template = file("cloudinit/cloud-init.yaml.cfg")
 }
@@ -43,8 +48,11 @@ resource "hcloud_server" "controller0" {
     image = var.image
     server_type = var.controller_type
     location = var.location
-    ssh_keys = var.ssh_key
+    ssh_keys = var.ssh_keys
     user_data = data.template_file.cloudinit.rendered
+    public_net {
+      ipv6_enabled = var.ipv6_enabled
+    }
     labels = {
         role = "controller"
     }
@@ -55,8 +63,11 @@ resource "hcloud_server" "controller1" {
     image = var.image
     server_type = var.controller_type
     location = var.location
-    ssh_keys = var.ssh_key
+    ssh_keys = var.ssh_keys
     user_data = data.template_file.cloudinit.rendered
+    public_net {
+      ipv6_enabled = var.ipv6_enabled
+    }
     labels = {
         role = "controller"
     }
@@ -67,8 +78,11 @@ resource "hcloud_server" "controller2" {
     image = var.image
     server_type = var.controller_type
     location = var.location
-    ssh_keys = var.ssh_key
+    ssh_keys = var.ssh_keys
     user_data = data.template_file.cloudinit.rendered
+    public_net {
+      ipv6_enabled = var.ipv6_enabled
+    }
     labels = {
         role = "controller"
     }
@@ -79,8 +93,11 @@ resource "hcloud_server" "worker0" {
     image = var.image
     server_type = var.worker_type
     location = var.location
-    ssh_keys = var.ssh_key
+    ssh_keys = var.ssh_keys
     user_data = data.template_file.cloudinit.rendered
+    public_net {
+      ipv6_enabled = var.ipv6_enabled
+    }
     labels = {
         role = "worker"
     }
@@ -91,8 +108,11 @@ resource "hcloud_server" "worker1" {
     image = var.image
     server_type = var.worker_type
     location = var.location
-    ssh_keys = var.ssh_key
+    ssh_keys = var.ssh_keys
     user_data = data.template_file.cloudinit.rendered
+    public_net {
+      ipv6_enabled = var.ipv6_enabled
+    }
     labels = {
         role = "worker"
     }
@@ -103,8 +123,11 @@ resource "hcloud_server" "worker2" {
     image = var.image
     server_type = var.worker_type
     location = var.location
-    ssh_keys = var.ssh_key
+    ssh_keys = var.ssh_keys
     user_data = data.template_file.cloudinit.rendered
+    public_net {
+      ipv6_enabled = var.ipv6_enabled
+    }
     labels = {
         role = "worker"
     }
@@ -115,8 +138,11 @@ resource "hcloud_server" "bastionhost" {
     image = var.image
     server_type = var.bastion_type
     location = var.location
-    ssh_keys = var.ssh_key
+    ssh_keys = var.ssh_keys
     user_data = data.template_file.cloudinit.rendered
+    public_net {
+      ipv6_enabled = var.ipv6_enabled
+    }
     labels = {
         role = "bastion"
     }
@@ -179,29 +205,37 @@ resource "hcloud_load_balancer" "k0s_load_balancer" {
 
 resource "hcloud_load_balancer_target" "load_balancer_target" {
   type             = "label_selector"
-  load_balancer_id = hcloud_load_balancer.load_balancer.id
+  load_balancer_id = hcloud_load_balancer.k0s_load_balancer.id
   label_selector = "role=controller"
 }
 
 resource "hcloud_load_balancer_service" "load_balancer_service_6443" {
-    load_balancer_id = hcloud_load_balancer.load_balancer.id
+    load_balancer_id = hcloud_load_balancer.k0s_load_balancer.id
     protocol = "tcp"
     listen_port = 6443
     destination_port = 6443
 }
 
 resource "hcloud_load_balancer_service" "load_balancer_service_9443" {
-    load_balancer_id = hcloud_load_balancer.load_balancer.id
+    load_balancer_id = hcloud_load_balancer.k0s_load_balancer.id
     protocol = "tcp"
     listen_port = 9443
     destination_port = 9443
 }
 
 resource "hcloud_load_balancer_service" "load_balancer_service_8132" {
-    load_balancer_id = hcloud_load_balancer.load_balancer.id
+    load_balancer_id = hcloud_load_balancer.k0s_load_balancer.id
     protocol = "tcp"
     listen_port = 8132
     destination_port = 8132
+}
+
+resource "local_file" "k0ctl-yaml" {
+  content = templatefile("${path.root}/k0s/k0sctl.yaml.tpl", {
+    public-bastionhost-address = hcloud_server.bastionhost.ipv4_address,
+    loadbalancer-address = hcloud_load_balancer.k0s_load_balancer.ipv4
+  })
+  filename = "${path.root}/var/k0sctl.yaml"
 }
 
 output "server_ip_controller0" {
@@ -226,5 +260,5 @@ output "server_ip_bastionhost" {
     value = hcloud_server.bastionhost.ipv4_address
 }
 output "k0s_load_balancer_ip" {
-    value = hcloud_load_balancer.k0s_load_balancer.ipv4_address
+    value = hcloud_load_balancer.k0s_load_balancer.ipv4
 }

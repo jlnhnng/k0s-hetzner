@@ -1,6 +1,6 @@
-hcloud_token = "XXX"
-ssh_keys = ["you@domain.com"]
-image = "ubuntu-18.04"
+hcloud_token = ""
+ssh_keys = ["default"]
+image = "ubuntu-22.04"
 controller_type = "cx21"
 worker_type = "cx21"
 bastion_type = "cx11"
