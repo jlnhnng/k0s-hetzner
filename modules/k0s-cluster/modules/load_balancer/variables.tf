@@ -9,3 +9,8 @@ variable "load_balancer_type" {
   default = "lb11"
   description = "Load Balancer type"
 }
+
+variable "name" {
+  type = string
+  default = "k0s-load-balancer"
+}

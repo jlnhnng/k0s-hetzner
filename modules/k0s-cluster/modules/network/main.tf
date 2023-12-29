@@ -9,7 +9,7 @@ module "subnets" {
 }
 
 resource "hcloud_network" "network" {
-  name = var.name
+  name = "${var.name_prefix}-network"
   ip_range = var.cluster_cidr
 }
 

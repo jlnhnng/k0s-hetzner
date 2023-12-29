@@ -1,0 +1,34 @@
+hcloud_token = ""
+ssh_keys = ["default"]
+image = "ubuntu-22.04"
+controller_type = "cx21"
+worker_type = "cx21"
+bastion_type = "cx11"
+network_zone = "eu-central"
+cluster_name = mydearcluster
+node_pools = {
+"controllers" = {
+    server_type = "cx21"
+    image       = "ubuntu-22.04"
+    prefix      = "controller-0"
+    num_nodes    = 3
+    role        = "controller"
+    cidrhost_prefix  = 3
+},
+"workers" = {
+    server_type = "cpx11"
+    image       = "ubuntu-22.04"
+    prefix      = "worker-0"
+    num_nodes    = 3
+    role        = "worker"
+    cidrhost_prefix  = 6
+},
+"bastions" = {
+    server_type = "cax11"
+    image       = "ubuntu-22.04"
+    prefix      = "bastion-0"
+    num_nodes    = 1
+    role        = "bastion"
+    cidrhost_prefix  = 9
+}
+}

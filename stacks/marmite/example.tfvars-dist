@@ -1,8 +1,0 @@
-hcloud_token = ""
-ssh_keys = ["default"]
-image = "ubuntu-22.04"
-controller_type = "cx21"
-worker_type = "cx21"
-bastion_type = "cx11"
-network_zone = "eu-central"
-cluster_name = mydearcluster

@@ -1,6 +1,5 @@
 output "id" {
   value = hcloud_network.network.id
-  description = "Network ID"
 }
 
 output "cluster_cidr" {
