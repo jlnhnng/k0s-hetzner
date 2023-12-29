@@ -1,43 +1,4 @@
-variable "hcloud_token" {
-    description = "Hetzner API token"
-}
 
-provider "hcloud" {
-    token = var.hcloud_token
-}
-
-variable "ssh_keys" {
-    default = []
-}
-
-variable "location" {
-    default = "fsn1"
-}
-
-variable "image" {
-    default = "ubuntu-22.04"
-}
-
-variable "controller_type" {
-    default = "cx21"
-}
-
-variable "worker_type" {
-    default = "cx21"
-}
-
-variable "bastion_type" {
-    default = "cx11"
-}
-
-variable "network_zone" {
-    default = "eu-central"
-}
-
-variable "ipv6_enabled" {
-  type = bool
-  default = false
-}
 
 resource "hcloud_server" "controller0" {
     name = "controller0"

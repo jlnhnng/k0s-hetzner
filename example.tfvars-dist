@@ -5,3 +5,4 @@ controller_type = "cx21"
 worker_type = "cx21"
 bastion_type = "cx11"
 network_zone = "eu-central"
+cluster_name = mydearcluster
