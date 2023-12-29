@@ -39,17 +39,13 @@ variable "ipv6_enabled" {
   default = false
 }
 
-data "template_file" "cloudinit" {
-    template = file("cloudinit/cloud-init.yaml.cfg")
-}
-
 resource "hcloud_server" "controller0" {
     name = "controller0"
     image = var.image
     server_type = var.controller_type
     location = var.location
     ssh_keys = var.ssh_keys
-    user_data = data.template_file.cloudinit.rendered
+    user_data = templatefile("${path.root}/templates/cloud-init.yaml.tpl", {})
     public_net {
       ipv6_enabled = var.ipv6_enabled
     }
@@ -64,7 +60,7 @@ resource "hcloud_server" "controller1" {
     server_type = var.controller_type
     location = var.location
     ssh_keys = var.ssh_keys
-    user_data = data.template_file.cloudinit.rendered
+    user_data = templatefile("${path.root}/templates/cloud-init.yaml.tpl", {})
     public_net {
       ipv6_enabled = var.ipv6_enabled
     }
@@ -79,7 +75,7 @@ resource "hcloud_server" "controller2" {
     server_type = var.controller_type
     location = var.location
     ssh_keys = var.ssh_keys
-    user_data = data.template_file.cloudinit.rendered
+    user_data = templatefile("${path.root}/templates/cloud-init.yaml.tpl", {})
     public_net {
       ipv6_enabled = var.ipv6_enabled
     }
@@ -94,7 +90,7 @@ resource "hcloud_server" "worker0" {
     server_type = var.worker_type
     location = var.location
     ssh_keys = var.ssh_keys
-    user_data = data.template_file.cloudinit.rendered
+    user_data = templatefile("${path.root}/templates/cloud-init.yaml.tpl", {})
     public_net {
       ipv6_enabled = var.ipv6_enabled
     }
@@ -109,7 +105,7 @@ resource "hcloud_server" "worker1" {
     server_type = var.worker_type
     location = var.location
     ssh_keys = var.ssh_keys
-    user_data = data.template_file.cloudinit.rendered
+    user_data = templatefile("${path.root}/templates/cloud-init.yaml.tpl", {})
     public_net {
       ipv6_enabled = var.ipv6_enabled
     }
@@ -124,7 +120,7 @@ resource "hcloud_server" "worker2" {
     server_type = var.worker_type
     location = var.location
     ssh_keys = var.ssh_keys
-    user_data = data.template_file.cloudinit.rendered
+    user_data = templatefile("${path.root}/templates/cloud-init.yaml.tpl", {})
     public_net {
       ipv6_enabled = var.ipv6_enabled
     }
@@ -139,7 +135,7 @@ resource "hcloud_server" "bastionhost" {
     server_type = var.bastion_type
     location = var.location
     ssh_keys = var.ssh_keys
-    user_data = data.template_file.cloudinit.rendered
+    user_data = templatefile("${path.root}/templates/cloud-init.yaml.tpl", {})
     public_net {
       ipv6_enabled = var.ipv6_enabled
     }
@@ -148,53 +144,53 @@ resource "hcloud_server" "bastionhost" {
     }
 }
 
-resource "hcloud_network" "network" {
-    name = "network"
-    ip_range = "10.0.0.0/8"
+resource "hcloud_network" "cloud" {
+    name = "cloud"
+    ip_range = "10.0.0.0/16"
 }
 
-resource "hcloud_network_subnet" "subnet" {
-  network_id = hcloud_network.network.id
+resource "hcloud_network_subnet" "servers" {
+  network_id = hcloud_network.cloud.id
   type = "cloud"
   network_zone = var.network_zone
-  ip_range   = "10.250.0.0/24"
+  ip_range   = "10.0.1.0/24"
 }
 
 resource "hcloud_server_network" "controller0-network" {
   server_id = hcloud_server.controller0.id
-  subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.250.0.100"
+  subnet_id = hcloud_network_subnet.servers.id
+  ip = "10.0.1.1"
 }
 resource "hcloud_server_network" "controller1-network" {
   server_id = hcloud_server.controller1.id
-  subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.250.0.101"
+  subnet_id = hcloud_network_subnet.servers.id
+  ip = "10.0.1.2"
 }
 resource "hcloud_server_network" "controller2-network" {
   server_id = hcloud_server.controller2.id
-  subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.250.0.102"
+  subnet_id = hcloud_network_subnet.servers.id
+  ip = "10.0.1.3"
 }
 resource "hcloud_server_network" "worker0-network" {
   server_id = hcloud_server.worker0.id
-  subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.250.0.200"
+  subnet_id = hcloud_network_subnet.servers.id
+  ip = "10.0.1.10"
 }
 resource "hcloud_server_network" "worker1-network" {
   server_id = hcloud_server.worker1.id
-  subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.250.0.201"
+  subnet_id = hcloud_network_subnet.servers.id
+  ip = "10.0.1.11"
 }
 resource "hcloud_server_network" "worker2-network" {
   server_id = hcloud_server.worker2.id
-  subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.250.0.202"
+  subnet_id = hcloud_network_subnet.servers.id
+  ip = "10.0.1.12"
 }
 
 resource "hcloud_server_network" "bastionhost-network" {
   server_id = hcloud_server.bastionhost.id
-  subnet_id = hcloud_network_subnet.subnet.id
-  ip = "10.250.0.50"
+  subnet_id = hcloud_network_subnet.servers.id
+  ip = "10.0.1.20"
 }
 
 resource "hcloud_load_balancer" "k0s_load_balancer" {
@@ -231,11 +227,19 @@ resource "hcloud_load_balancer_service" "load_balancer_service_8132" {
 }
 
 resource "local_file" "k0ctl-yaml" {
-  content = templatefile("${path.root}/k0s/k0sctl.yaml.tpl", {
+  content = templatefile("${path.root}/templates/k0sctl.yaml.tpl", {
     public-bastionhost-address = hcloud_server.bastionhost.ipv4_address,
     loadbalancer-address = hcloud_load_balancer.k0s_load_balancer.ipv4
   })
   filename = "${path.root}/var/k0sctl.yaml"
+}
+
+resource "local_file" "hcloud-secret" {
+  content = templatefile("${path.root}/templates/hetzner/hcloud-secret.yaml.tpl", {
+    hcloud_token = var.hcloud_token
+    network = hcloud_network.cloud.id
+  })
+  filename = "${path.root}/var/hetzner/hcloud-secret.yaml"
 }
 
 output "server_ip_controller0" {

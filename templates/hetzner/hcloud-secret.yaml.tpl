@@ -4,5 +4,5 @@ metadata:
   name: hcloud
   namespace: kube-system
 stringData:
-  token: XXX
-  network: kubenet
+  token: "${hcloud_token}"
+  network: "${network}"

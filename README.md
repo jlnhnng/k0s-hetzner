@@ -50,7 +50,7 @@ Provided a configuration file describing the desired cluster state, k0sctl will 
 Please adjust the k0sctl.yaml via adding the ip address of the Bastion Host and the Loadbalancer. As soon as we've added them we can now apply the desired cluster state and form the k0s cluster. 
 
 ```
-k0sctl apply --config k0s/k0sctl.yaml
+k0sctl apply --config var/k0sctl.yaml
 ```
 
 You now have a Kubernetes cluster with 3 master nodes and 3 worker nodes. 

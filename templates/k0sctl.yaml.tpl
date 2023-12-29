@@ -5,7 +5,7 @@ metadata:
 spec:
   hosts:
   - ssh:
-      address: 10.250.0.100
+      address: 10.0.1.1
       user: root
       port: 22
       keyPath: ~/.ssh/id_rsa
@@ -14,11 +14,11 @@ spec:
         user: root
         keyPath: ~/.ssh/id_rsa
     role: controller+worker
-    privateAddress: 10.250.0.100
+    privateAddress: 10.0.1.1
     installFlags:
     - --kubelet-extra-args=--cloud-provider=external
   - ssh:
-      address: 10.250.0.101
+      address: 10.0.1.2
       user: root
       port: 22
       keyPath: ~/.ssh/id_rsa
@@ -27,11 +27,11 @@ spec:
         user: root
         keyPath: ~/.ssh/id_rsa
     role: controller+worker
-    privateAddress: 10.250.0.101
+    privateAddress: 10.0.1.2
     installFlags:
     - --kubelet-extra-args=--cloud-provider=external
   - ssh:
-      address: 10.250.0.102
+      address: 10.0.1.3
       user: root
       port: 22
       keyPath: ~/.ssh/id_rsa
@@ -40,11 +40,11 @@ spec:
         user: root
         keyPath: ~/.ssh/id_rsa
     role: controller+worker
-    privateAddress: 10.250.0.102
+    privateAddress: 10.0.1.3
     installFlags:
     - --kubelet-extra-args=--cloud-provider=external
   - ssh:
-      address: 10.250.0.200
+      address: 10.0.1.10
       user: root
       port: 22
       keyPath: ~/.ssh/id_rsa
@@ -53,11 +53,11 @@ spec:
         user: root
         keyPath: ~/.ssh/id_rsa
     role: worker
-    privateAddress: 10.250.0.200
+    privateAddress: 10.0.1.10
     installFlags:
     - --kubelet-extra-args=--cloud-provider=external
   - ssh:
-      address: 10.250.0.201
+      address: 10.0.1.11
       user: root
       port: 22
       keyPath: ~/.ssh/id_rsa
@@ -66,11 +66,11 @@ spec:
         user: root
         keyPath: ~/.ssh/id_rsa
     role: worker
-    privateAddress: 10.250.0.201
+    privateAddress: 10.0.1.11
     installFlags:
     - --kubelet-extra-args=--cloud-provider=external
   - ssh:
-      address: 10.250.0.202
+      address: 10.0.1.12
       user: root
       port: 22
       keyPath: ~/.ssh/id_rsa
@@ -79,7 +79,7 @@ spec:
         user: root
         keyPath: ~/.ssh/id_rsa
     role: worker
-    privateAddress: 10.250.0.202
+    privateAddress: 10.0.1.12
     installFlags:
     - --kubelet-extra-args=--cloud-provider=external
   k0s:
@@ -94,9 +94,9 @@ spec:
           externalAddress: ${loadbalancer-address}
           sans:
           - ${loadbalancer-address}
-          - 10.250.0.100
-          - 10.250.0.101
-          - 10.250.0.102
+          - 10.0.1.1
+          - 10.0.1.2
+          - 10.0.1.3
           k0sApiPort: 9443
           port: 6443
         installConfig:
@@ -118,10 +118,10 @@ spec:
             mtu: 0
             peerRouterASNs: ""
             peerRouterIPs: ""
-          podCIDR: 10.244.0.0/16
+          podCIDR: 10.0.16.0/20
           provider: kuberouter
-          serviceCIDR: 10.96.0.0/12
+          serviceCIDR: 10.0.8.0/21
         storage:
           type: etcd
         telemetry:
-          enabled: true
+          enabled: false
