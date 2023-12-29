@@ -1,7 +1,9 @@
 module "marmite" {
-  source            = "../../modules/k0s-cluster"
+  source            = "../../../modules/k0s-cluster"
+
   cluster_name      = "marmite"
   external_hostname = "marmite.pastis-hosting.net"
+
   node_pools = {
     "controllers" = {
       server_type     = "cx21"

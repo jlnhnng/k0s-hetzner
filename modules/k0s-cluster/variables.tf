@@ -1,9 +1,3 @@
-variable "hcloud_api_token" {
-  description = "Hetzner API token"
-  type        = string
-  default     = ""
-}
-
 variable "cluster_name" {
   type        = string
   default     = "cluster"
@@ -25,6 +19,8 @@ variable "node_pools" {
     role            = string
     cidrhost_prefix = number
   }))
+
+  default = {}
 }
 
 variable "external_hostname" {

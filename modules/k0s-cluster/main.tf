@@ -16,10 +16,12 @@ module "node_pools" {
   source = "./modules/node_pool"
 
   spec = {
-    name      = each.key
-    role      = each.value.role
-    image     = each.value.image
-    num_nodes = each.value.num_nodes
+    name            = each.key
+    role            = each.value.role
+    image           = each.value.image
+    num_nodes       = each.value.num_nodes
+    cidrhost_prefix = each.value.cidrhost_prefix
+    server_type     = each.value.server_type
   }
 
   cidrhost_prefix = each.value.cidrhost_prefix
@@ -38,6 +40,6 @@ module "k0sctl" {
   external_hostname   = var.external_hostname
   cluster_cidr        = module.network.cluster_cidr
   network_cidr_blocks = module.network.network_cidr_blocks
-
-  depends_on = [module.node_pools, module.network]
+  bastion_node        = module.node_pools["bastions"].nodes[0]
+  cluster_nodes       = module.node_pools["controllers"].nodes
 }

@@ -2,7 +2,6 @@ variable "spec" {
   type = object({
     server_type     = string
     image           = string
-    prefix          = string
     num_nodes        = number
     role            = string
     cidrhost_prefix = number
