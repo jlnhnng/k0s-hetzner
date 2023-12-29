@@ -15,7 +15,11 @@
 			"tflint": "latest",
 			"terragrunt": "none"
 		}
-	}
+	},
+
+	"postAttachCommand": [
+		"make help"
+	]
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
