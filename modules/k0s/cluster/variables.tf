@@ -4,9 +4,9 @@ variable "name" {
   description = "Cluster name"
 }
 
-# variable "load_balancer" {
-#   type = map(any)
-# }
+variable "external_address" {
+  type = string
+}
 
 variable "k0s_version" {
   type = string

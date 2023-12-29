@@ -46,12 +46,6 @@ variable "prefix" {
   description = "Node name prefix"
 }
 
-variable "network" {
-  type = string
-  default = "cloud"
-  description = "Network name"
-}
-
 variable "nodepool" {
   type = string
   default = ""

@@ -41,17 +41,20 @@ module "nodepools" {
   image    = each.value.image
   prefix   = each.value.prefix
   quantity = each.value.quantity
-  network  = module.network.id
   nodepool = each.key
   subnets  = module.network.subnets
   cidrhost_prefix = each.value.cidrhost_prefix
+}
+
+module "load_balancer" {
+  source = "../../modules/k0s/load_balancer"
 }
 
 module "cluster" {
   source = "../../modules/k0s/cluster"
 
   name = var.cluster_name
-  # load_balancer = module.load_balancers.loadx_balancer
+  external_address = module.load_balancer.ip
 
   depends_on = [module.nodepools]
 }

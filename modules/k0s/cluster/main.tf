@@ -16,15 +16,21 @@ resource "k0s_cluster" "cluster" {
       address = node.ipv4_address
       port = 22
       user = "root"
-      keyPath = "~/.ssh/id_rsa"
+      keyPath = "~/.ssh/id_dsa"
       bastion = {
         address = data.hcloud_server.bastion.ipv4_address
         port = 22
         user = "root"
-        keyPath = "~/.ssh/id_rsa"
+        keyPath = "~/.ssh/id_dsa"
       }
       privateAddress = node.labels.ip_private
       installFlags = "--kubelet-extra-args=--cloud-provider=external"
     }
   }]
+
+  config = {
+    api = {
+      externalAddress = var.external_address
+    }
+  }
 }
