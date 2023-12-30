@@ -18,7 +18,7 @@ resource "hcloud_server" "node" {
   public_net { ipv6_enabled = var.ipv6_enabled }
 
   # Node pool specification
-  name        = "${var.spec.name}-0${count.index + 1}"
+  name        = "${var.name_prefix}-${var.spec.name}-0${count.index + 1}"
   image       = data.hcloud_image.node.name
   server_type = var.spec.server_type
 

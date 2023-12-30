@@ -29,11 +29,6 @@ variable "subnet" {
   type    = any
 }
 
-variable "cidrhost_prefix" {
-  type = number
-}
-
 variable "name_prefix" {
-  type    = string
-  default = ""
+  type = string
 }

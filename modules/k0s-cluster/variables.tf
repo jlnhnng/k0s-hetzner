@@ -20,3 +20,8 @@ variable "node_pools" {
 variable "external_hostname" {
   type = string
 }
+
+variable "name_prefix" {
+  type = string
+  default = ""
+}

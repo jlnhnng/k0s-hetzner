@@ -25,7 +25,6 @@ module "node_pools" {
     server_type     = each.value.server_type
   }
 
-  cidrhost_prefix = each.value.cidrhost_prefix
   name_prefix     = var.cluster_name
   subnet          = module.network.subnets["infrastructure"]
 
