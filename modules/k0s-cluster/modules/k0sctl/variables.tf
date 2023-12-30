@@ -28,25 +28,14 @@ variable "external_ip" {
   default = ""
 }
 
-variable "node_pools" {
-  type = map(object({
-    server_type     = string
-    image           = string
-    prefix          = string
-    num_nodes       = number
-    role            = string
-    cidrhost_prefix = number
-  }))
-
-  default = {}
-}
-
 variable "bastion_node" {
   type = any
-  default = ""
 }
 
 variable "cluster_nodes" {
   type = any
-  default = ""
+}
+
+variable "ssh_key_path" {
+  type = string
 }

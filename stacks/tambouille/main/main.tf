@@ -1,5 +1,5 @@
 module "marmite" {
-  source            = "../../../modules/k0s-cluster"
+  source = "../../../modules/k0s-cluster"
 
   cluster_name      = "marmite"
   external_hostname = "marmite.pastis-hosting.net"

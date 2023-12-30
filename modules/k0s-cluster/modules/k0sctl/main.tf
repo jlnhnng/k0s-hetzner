@@ -13,7 +13,7 @@ resource "k0s_cluster" "cluster" {
         address = var.bastion_node.ipv4_address
         port = 22
         user = "root"
-        keyPath = "~/.ssh/id_rsa"
+        keyPath = var.ssh_key_path
       }
     }
     privateAddress = node.labels.ip_private
@@ -28,6 +28,24 @@ resource "k0s_cluster" "cluster" {
   })
 }
 
+resource "local_file" "k0sctl_config" {
+  filename = "${path.root}/dist/k0sctl_config.yaml"
+
+  content =  templatefile(
+    "${path.module}/../../templates/cluster.yaml.tpl", {
+      cluster_name = var.cluster_name
+      k0s_version = var.k0s_version
+
+      hosts = ""
+
+      cluster_config = templatefile("${path.module}/../../templates/cluster-config.yaml.tpl", {
+        external_ip = var.external_ip
+        external_hostname = var.external_hostname
+        pod_cidr = var.cluster_cidr
+        service_cidr = lookup(var.network_cidr_blocks, "services", "1.0.0.0/16")
+      })
+  })
+}
 
 # resource "k0s_cluster" "cluster" {
 

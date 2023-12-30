@@ -4,9 +4,10 @@ module "network" {
   name_prefix = var.cluster_name
 }
 
-# Load Balancer
-module "load_balancer" {
-  source = "./modules/load_balancer"
+# SSH keys
+module "ssh_keys" {
+  source = "./modules/ssh_keys"
+  name_prefix = var.cluster_name
 }
 
 # Provisionning of server nodes
@@ -26,8 +27,14 @@ module "node_pools" {
 
   cidrhost_prefix = each.value.cidrhost_prefix
   name_prefix     = var.cluster_name
-  ssh_keys        = var.ssh_keys
   subnet          = module.network.subnets["infrastructure"]
+
+  ssh_key_name    = module.ssh_keys.key_name
+}
+
+# Load Balancer
+module "load_balancer" {
+  source = "./modules/load_balancer"
 }
 
 # Cluster installation and configuration
@@ -42,4 +49,5 @@ module "k0sctl" {
   network_cidr_blocks = module.network.network_cidr_blocks
   bastion_node        = module.node_pools["bastions"].nodes[0]
   cluster_nodes       = module.node_pools["controllers"].nodes
+  ssh_key_path        = module.ssh_keys.key_path
 }

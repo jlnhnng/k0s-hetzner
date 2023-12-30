@@ -4,12 +4,6 @@ variable "cluster_name" {
   description = "Cluster name"
 }
 
-variable "ssh_keys" {
-  type        = list(string)
-  default     = []
-  description = "List of SSH key names"
-}
-
 variable "node_pools" {
   type = map(object({
     server_type     = string

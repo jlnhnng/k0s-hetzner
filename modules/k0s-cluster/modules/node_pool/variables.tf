@@ -14,10 +14,9 @@ variable "location" {
   description = "Node location in zone"
 }
 
-variable "ssh_keys" {
-  type        = list(string)
-  default     = []
-  description = "List of SSH key names"
+variable "ssh_key_name" {
+  type        = string
+  default     = ""
 }
 
 variable "ipv6_enabled" {
@@ -36,5 +35,5 @@ variable "cidrhost_prefix" {
 
 variable "name_prefix" {
   type    = string
-  default = "k0s-"
+  default = ""
 }

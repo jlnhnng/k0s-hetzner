@@ -12,7 +12,7 @@ resource "hcloud_server" "node" {
 
   # Common to all node_pools
   location    = var.location
-  ssh_keys    = var.ssh_keys
+  ssh_keys    = [ var.ssh_key_name ]
   user_data   = file("${path.module}/../../templates/cloud-init.yaml")
 
   public_net { ipv6_enabled = var.ipv6_enabled }
