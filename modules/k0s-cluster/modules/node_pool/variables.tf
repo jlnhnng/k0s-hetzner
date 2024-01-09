@@ -32,3 +32,8 @@ variable "subnet" {
 variable "name_prefix" {
   type = string
 }
+
+variable "hcloud_api_token" {
+  type = string
+  sensitive = true
+}

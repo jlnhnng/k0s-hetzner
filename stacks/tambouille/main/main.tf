@@ -4,6 +4,8 @@ module "marmite" {
   cluster_name      = "marmite"
   external_hostname = "marmite.pastis-hosting.net"
 
+  hcloud_api_token = var.hcloud_api_token
+
   node_pools = {
     "controllers" = {
       server_type     = "cpx11"
@@ -17,7 +19,7 @@ module "marmite" {
       server_type     = "cpx11"
       image           = "ubuntu-22.04"
       prefix          = "worker-0"
-      num_nodes       = 1
+      num_nodes       = 2
       role            = "worker"
       cidrhost_prefix = 6
     },

@@ -19,3 +19,17 @@ runcmd:
   - sed -i -e '/^\(#\|\)AllowTcpForwarding/s/^.*$/AllowTcpForwarding no/' /etc/ssh/sshd_config
   - sed -i -e '/^\(#\|\)AllowAgentForwarding/s/^.*$/AllowAgentForwarding no/' /etc/ssh/sshd_config
   - restart ssh
+
+write_files:
+  - path: /var/lib/k0s/manifests/hcloud-ccm/secret.yaml
+    content: |
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: hcloud
+        namespace: kube-system
+      stringData:
+        token: "${hcloud_api_token}"
+        network: "${network}"
+    owner: 'root:root'
+    permissions: '0644'

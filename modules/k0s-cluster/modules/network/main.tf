@@ -1,6 +1,5 @@
 module "subnets" {
-  source  = "hashicorp/subnets/cidr"
-  version = "1.0.0"
+  source  = "git::https://github.com/hashicorp/terraform-cidr-subnets?ref=52ca061aaea2e8f58c91ac03ca1fae45e44c28bf" # 1.0.0
   base_cidr_block = var.cluster_cidr
   networks = [for k,v in var.subnets : {
     name = k

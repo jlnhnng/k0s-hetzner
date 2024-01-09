@@ -32,9 +32,14 @@ variable "bastion_node" {
   type = any
 }
 
-variable "cluster_nodes" {
+variable "worker_nodes" {
   type = any
 }
+
+variable "controller_nodes" {
+  type = any
+}
+
 
 variable "ssh_key_path" {
   type = string

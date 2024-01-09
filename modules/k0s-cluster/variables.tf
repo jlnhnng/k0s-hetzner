@@ -25,3 +25,7 @@ variable "name_prefix" {
   type = string
   default = ""
 }
+
+variable "hcloud_api_token" {
+  type = string
+}

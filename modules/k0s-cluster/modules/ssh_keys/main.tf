@@ -3,9 +3,7 @@ locals {
 }
 
 module "ssh-keypair-generator" {
-  source  = "jd4883/ssh-keypair-generator/hashicorp"
-  version = "1.0.0"
-
+  source  = "git::https://github.com/jd4883/terraform-hashicorp-ssh-keypair-generator?ref=8e4238d1076b57de0c8cac3f26638cae536ae9e1" # v1
   key_name = local.key_name
 }
 

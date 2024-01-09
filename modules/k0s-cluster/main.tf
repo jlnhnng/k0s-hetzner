@@ -16,6 +16,8 @@ module "node_pools" {
 
   source = "./modules/node_pool"
 
+  hcloud_api_token = var.hcloud_api_token
+
   spec = {
     name            = each.key
     role            = each.value.role
@@ -23,6 +25,7 @@ module "node_pools" {
     num_nodes       = each.value.num_nodes
     cidrhost_prefix = each.value.cidrhost_prefix
     server_type     = each.value.server_type
+    hcloud_api_token = var.hcloud_api_token
   }
 
   name_prefix     = var.cluster_name
@@ -47,6 +50,7 @@ module "k0sctl" {
   cluster_cidr        = module.network.cluster_cidr
   network_cidr_blocks = module.network.network_cidr_blocks
   bastion_node        = module.node_pools["bastions"].nodes[0]
-  cluster_nodes       = concat(module.node_pools["controllers"].nodes, module.node_pools["workers"].nodes)
+  controller_nodes    = module.node_pools["controllers"].nodes
+  worker_nodes        = module.node_pools["workers"].nodes
   ssh_key_path        = module.ssh_keys.path
 }
