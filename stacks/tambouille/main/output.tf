@@ -1,4 +1,4 @@
 output "kubeconfig" {
-  value = module.k0sctl.kubeconfig
+  value = module.marmite.kubeconfig
   sensitive = true
 }

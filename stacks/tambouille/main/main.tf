@@ -6,10 +6,10 @@ module "marmite" {
 
   node_pools = {
     "controllers" = {
-      server_type     = "cx21"
+      server_type     = "cpx11"
       image           = "ubuntu-22.04"
       prefix          = "controller-0"
-      num_nodes       = 3
+      num_nodes       = 1
       role            = "controller"
       cidrhost_prefix = 3
     },
@@ -17,7 +17,7 @@ module "marmite" {
       server_type     = "cpx11"
       image           = "ubuntu-22.04"
       prefix          = "worker-0"
-      num_nodes       = 3
+      num_nodes       = 1
       role            = "worker"
       cidrhost_prefix = 6
     },

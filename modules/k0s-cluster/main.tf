@@ -28,7 +28,7 @@ module "node_pools" {
   name_prefix     = var.cluster_name
   subnet          = module.network.subnets["infrastructure"]
 
-  ssh_key_name    = module.ssh_keys.key_name
+  ssh_key_name    = module.ssh_keys.name
 }
 
 # Load Balancer
@@ -47,6 +47,6 @@ module "k0sctl" {
   cluster_cidr        = module.network.cluster_cidr
   network_cidr_blocks = module.network.network_cidr_blocks
   bastion_node        = module.node_pools["bastions"].nodes[0]
-  cluster_nodes       = module.node_pools["controllers"].nodes
-  ssh_key_path        = module.ssh_keys.key_path
+  cluster_nodes       = concat(module.node_pools["controllers"].nodes, module.node_pools["workers"].nodes)
+  ssh_key_path        = module.ssh_keys.path
 }

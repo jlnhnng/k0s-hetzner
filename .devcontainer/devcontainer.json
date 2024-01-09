@@ -13,12 +13,11 @@
 		"ghcr.io/devcontainers/features/terraform:1": {
 			"version": "latest",
 			"tflint": "latest",
-			"terragrunt": "none"
 		}
 	},
 
 	"postAttachCommand": [
-		"make help"
+		"make", "help"
 	]
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
