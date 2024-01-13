@@ -5,9 +5,15 @@ help:
 	@echo " - destroy: destroy infrastructure in hcloud"
 	@echo " - proxy: proxies k8s API to port 8001"
 
-apply:
+init:
+	terraform -chdir=./stacks/tambouille/main init
+
+apply: init
 	rm -f ~/.ssh/known_hosts
 	terraform -chdir=./stacks/tambouille/main apply -auto-approve -var-file="$$USER.tfvars"
+
+plan: init
+	terraform -chdir=./stacks/tambouille/main plan -var-file="$$USER.tfvars"
 
 destroy:
 	terraform -chdir=./stacks/tambouille/main destroy -auto-approve -var-file="$$USER.tfvars"

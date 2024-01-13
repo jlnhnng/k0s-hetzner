@@ -19,7 +19,7 @@ module "marmite" {
       server_type     = "cpx11"
       image           = "ubuntu-22.04"
       prefix          = "worker-0"
-      num_nodes       = 2
+      num_nodes       = 1
       role            = "worker"
       cidrhost_prefix = 6
     },
