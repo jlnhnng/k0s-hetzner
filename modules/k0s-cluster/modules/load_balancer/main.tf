@@ -1,8 +1,8 @@
-resource "hcloud_load_balancer" "k0s_load_balancer" {
-  name               = var.name
-  load_balancer_type = var.load_balancer_type
-  location           = var.location
-}
+# resource "hcloud_load_balancer" "k0s_load_balancer" {
+#   name               = var.name
+#   load_balancer_type = var.load_balancer_type
+#   location           = var.location
+# }
 
 # resource "hcloud_load_balancer_target" "load_balancer_target" {
 #   type             = "label_selector"
