@@ -23,13 +23,13 @@ module "marmite" {
       role            = "worker"
       cidrhost_prefix = 6
     },
-    "bastions" = {
-      server_type     = "cax11"
-      image           = "ubuntu-22.04"
-      prefix          = "bastion-0"
-      num_nodes       = 1
-      role            = "bastion"
-      cidrhost_prefix = 9
-    }
+    # "bastions" = {
+    #   server_type     = "cax11"
+    #   image           = "ubuntu-22.04"
+    #   prefix          = "bastion-0"
+    #   num_nodes       = 1
+    #   role            = "bastion"
+    #   cidrhost_prefix = 9
+    # }
   }
 }

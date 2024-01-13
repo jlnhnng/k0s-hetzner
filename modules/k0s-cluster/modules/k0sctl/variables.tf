@@ -28,9 +28,9 @@ variable "external_ip" {
   default = ""
 }
 
-variable "bastion_node" {
-  type = any
-}
+# variable "bastion_node" {
+#   type = any
+# }
 
 variable "worker_nodes" {
   type = any

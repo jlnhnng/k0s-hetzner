@@ -34,22 +34,17 @@ module "node_pools" {
   ssh_key_name    = module.ssh_keys.name
 }
 
-# Load Balancer
-module "load_balancer" {
-  source = "./modules/load_balancer"
-}
-
 # Cluster installation and configuration
 module "k0sctl" {
   source = "./modules/k0sctl"
 
   cluster_name = "${var.cluster_name}-cluster"
 
-  external_ip         = module.load_balancer.ip
-  external_hostname   = var.external_hostname
+  # external_ip         = module.load_balancer.workers_ip
+  # external_hostname   = var.external_hostname
   cluster_cidr        = module.network.cluster_cidr
   network_cidr_blocks = module.network.network_cidr_blocks
-  bastion_node        = module.node_pools["bastions"].nodes[0]
+  # bastion_node        = module.node_pools["bastions"].nodes[0]
   controller_nodes    = module.node_pools["controllers"].nodes
   worker_nodes        = module.node_pools["workers"].nodes
   ssh_key_path        = module.ssh_keys.path

@@ -4,16 +4,16 @@ metadata:
   name: k0s
 spec:
   api:
-    #address: ${external_ip}
+    address: ${controller_nodes[0].ipv4_address}
     port: 6443
     k0sApiPort: 9443
-    #externalAddress: ${external_ip}
-    # sans:
-    #   - ${external_ip}
+    externalAddress: ${controller_nodes[0].ipv4_address}
+    sans:
+      - ${controller_nodes[0].ipv4_address}
   storage:
     type: etcd
-    # etcd:
-    #   peerAddress: ${external_ip}
+    etcd:
+      peerAddress: ${controller_nodes[0].ipv4_address}
   network:
     provider: kuberouter
     calico: null
@@ -67,5 +67,4 @@ spec:
             service:
               annotations:
                 load-balancer.hetzner.cloud/network-zone: eu-central
-                load-balancer.hetzner.cloud/name: k0s-load-balancer
-                load-balancer.hetzner.cloud/hostname: marmite.pastis-hosting.net
+                load-balancer.hetzner.cloud/name: marmite-load-balancer
