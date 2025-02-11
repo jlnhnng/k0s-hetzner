@@ -11,7 +11,6 @@ This config will create 7 servers, within a private network, for a Kubernetes Cl
 - 3 Master Nodes with each 2 vCPUs and 4 GB RAM (CX21)
 - 3 Worker Nodes with each 2 vCPUs, 8 GB RAM (CX31)
 - 1 Private Network (10.0.0.0/8) with 1 Subnet (10.250.0.0/24)
-- 1 Bastion Host to connect to the private network (CX11)
 
 ### Prerequesites
 - Hetzner Cloud Account: [Referal Link](https://hetzner.cloud/?ref=n2kb4hM7PmYQ)
@@ -26,8 +25,10 @@ With the following steps we will create the resources mentioned above:
 2. Modify `terraform.tfvars`, add your API Key and at least the your SSH Fingerprint.
 3. Add SSH Key to `cloudinit/cloud-init.yaml.cfg` (line 13)
 4. Change the username in `cloudinit/cloud-init.yaml.cfg` (line 8 and 30)
-5. Run `terraform plan` and check if everything looks good
-6. Run `terraform apply` and give it approx. 2 minutes
+5. Change the username in `k0sctl.tpl.yaml` (line 10 and 21)
+6. Run `terraform init` and check if everything looks good
+7. Run `terraform plan` and check if everything looks good
+8. Run `terraform apply` and give it approx. 2 minutes
 
 > You can add more customizations in the cloud-init file if needed
 
@@ -41,13 +42,14 @@ Now that you got all resources ready, we can install a k0s cluster within a few 
 With k0sctl the installation of a production-grade cluster is completly automated, as well as Day 2 operations like scaling or upgrading the cluster. 
 
 To run k0sctl we first need to download it. In this instruction I will use homebrew:
+
 ``` bash
 brew install k0sproject/tap/k0sctl
 ```
 
-Provided a configuration file describing the desired cluster state, k0sctl will connect to the listed hosts, determines the current state of the hosts and configures them as needed to form a k0s cluster.
+> Note: Please check the [k0sctl readme](https://github.com/k0sproject/k0sctl?tab=readme-ov-file#installation) for other installation methods. 
 
-Please adjust the k0sctl.yaml via adding the ip address of the Bastion Host and the Loadbalancer. As soon as we've added them we can now apply the desired cluster state and form the k0s cluster. 
+Given a configuration file that defines the desired cluster state, k0sctl connects to the listed hosts, checks their current state, and configures them as needed to form a k0s cluster.
 
 ```
 k0sctl apply --config k0s/k0sctl.yaml
@@ -59,10 +61,11 @@ You now have a Kubernetes cluster with 3 master nodes and 3 worker nodes.
 
 Hetzner Cloud offers useful integration tooling for Kubernetes and Hetzner Cloud Projects. 
 
-Let's start with adding our API Key to the YAML file (hetzner/hcloud-secret.yaml) for the secret, so the Cloud Controller Manager and the Container Storage Interface Driver can interact with our Hetzner Cloud Project. After this change we need to apply the YAML to our k0s cluster:
+Let's start with adding our API Key to the YAML file `hetzner/hcloud-secret.yaml` for the secret, so the Cloud Controller Manager and the Container Storage Interface Driver can connect with our Hetzner Cloud Project. After this change we need to apply the YAML to our k0s cluster:
+
 ``` bash
 # Grab kubeconfig file from previously created cluster
-k0sctl kubeconfig  --config k0s/k0sctl.yaml > kubeconfig
+k0sctl kubeconfig  --config k0sctl.yaml > kubeconfig
 
 # Apply hcloud secret manifest
 kubectl apply -f 'hetzner/hcloud-secret.yaml' --kubeconfig kubeconfig
@@ -72,20 +75,24 @@ kubectl apply -f 'hetzner/hcloud-secret.yaml' --kubeconfig kubeconfig
 
 Hetzner Cloud offers a [Kubernetes Cloud Controller Manager for Hetzner Cloud](https://github.com/hetznercloud/hcloud-cloud-controller-manager). This CCM is useful if we want to create Loadbalancer Services, Zones in Kubernetes, use private networks of Hetzner for Pods or make Kubernetes more aware of the nodes in a Hetzner Cloud Project.
 
-For k0s there needs to be some small changes to the manifests from Hetzner since kubelet is in a different directory with k0s. These changes are already made in hetzner/ccm.yaml, so let's apply the manifest. 
-
 ``` bash
-# Apply CCM manifest
-kubectl apply -f 'hetzner/hcloud-ccm.yaml' --kubeconfig kubeconfig
+# Add Hetzner Cloud helm chart repository
+helm repo add hcloud https://charts.hetzner.cloud
+helm repo update hcloud
+
+# Install the latest version of the hcloud ccm chart.
+helm install hccm hcloud/hcloud-cloud-controller-manager --set networking.enabled=true -n kube-system
 ```
 
 #### Hetzner Cloud CSI
 
 Hetzner Cloud offers a [CSI (container storage interface) driver](https://github.com/hetznercloud/csi-driver), so you can dynamically create persistent volumes in your Kubernetes Cluster, using volumes in your Hetzner Cloud project.
 
+For k0s there needs to be some small changes since kubelet is in a different directory with k0s.
+
 ``` bash
-# Apply CSI manifest
-kubectl apply -f 'hetzner/hcloud-csi.yaml' --kubeconfig kubeconfig
+# Install the latest version of the csi-driver chart.
+helm install hcloud-csi hcloud/hcloud-csi -n kube-system --set node.kubeletDir=/var/lib/k0s/kubelet
 ```
 
 Done. You now have a fully functional and production grade Kubernetes cluster with 3 master nodes, 3 worker nodes and the ability to create services with type loadbalancer and stateful application in your cluster with persistent volumes from Hetzner Cloud.

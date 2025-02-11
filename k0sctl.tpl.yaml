@@ -1,0 +1,71 @@
+apiVersion: k0sctl.k0sproject.io/v1beta1
+kind: Cluster
+metadata:
+  name: k0s-cluster
+spec:
+  hosts:
+%{ for i, ext in controller_external_ips ~}
+  - ssh:
+      address: ${ext}
+      user: xxx
+      port: 22
+      keyPath: ~/.ssh/id_rsa
+    role: controller+worker
+    privateAddress: ${controller_internal_ips[i]}
+    installFlags:
+    - --kubelet-extra-args=--cloud-provider=external
+%{ endfor ~}
+%{ for i, ext in worker_external_ips ~}
+  - ssh:
+      address: ${ext}
+      user: xxx
+      port: 22
+      keyPath: ~/.ssh/id_rsa
+    role: worker
+    privateAddress: ${worker_internal_ips[i]}
+    installFlags:
+    - --kubelet-extra-args=--cloud-provider=external
+%{ endfor ~}
+  k0s:
+    version: ${k0s_version}
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: Cluster
+      metadata:
+        name: hetzner-k0s
+      spec:
+        api:
+          externalAddress: ${loadbalancer_ip}
+          sans:
+            - ${loadbalancer_ip}
+%{ for ext in controller_external_ips ~}
+            - ${ext}
+%{ endfor ~}
+          k0sApiPort: 9443
+          port: 6443
+        installConfig:
+          users:
+            etcdUser: etcd
+            kineUser: kube-apiserver
+            konnectivityUser: konnectivity-server
+            kubeAPIserverUser: kube-apiserver
+            kubeSchedulerUser: kube-scheduler
+        konnectivity:
+          adminPort: 8133
+          agentPort: 8132
+        network:
+          kubeProxy:
+            disabled: false
+            mode: iptables
+          kuberouter:
+            autoMTU: true
+            mtu: 0
+            peerRouterASNs: ""
+            peerRouterIPs: ""
+          podCIDR: 10.244.0.0/16
+          provider: kuberouter
+          serviceCIDR: 10.96.0.0/12
+        storage:
+          type: etcd
+        telemetry:
+          enabled: true

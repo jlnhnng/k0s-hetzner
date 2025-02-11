@@ -1,7 +1,13 @@
-hcloud_token = "XXX"
-ssh_keys = ["you@domain.com"]
-image = "ubuntu-18.04"
-controller_type = "cx21"
-worker_type = "cx21"
-bastion_type = "cx11"
+hcloud_token = "xxx"
+
+ssh_key = ["xxx"]
+
+image = "ubuntu-24.04"
+
+controller_count = "1"
+controller_type = "cx22"
+
+worker_count = "3"
+worker_type = "cx22"
+
 network_zone = "eu-central"
